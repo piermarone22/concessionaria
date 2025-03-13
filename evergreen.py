@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 with open("style.css") as f:
     st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
-
+ 
 
 st.title("Finanziamento classico")
 
@@ -15,7 +15,7 @@ col1,col2,col3 = st.columns(3)
 with col1:
     st.title("Rata")
 with col2:
-    rata = st.number_input("",min_value=0, step=10)
+    st.session_state["rata"] = st.number_input("",min_value=0, step=10)
 st.write("")
 st.write("")
 st.write("")
@@ -84,51 +84,64 @@ with col3:
 
 tot_mese = round(totale / anni_ass / 12)
 
-st.markdown(f"""
-<style>
-table {{
-    width: 100%;
-    text-align: center;
-    border-collapse: collapse;
-}}
-th, td {{
-    padding: 8px;
-    border: 1px solid black;
-}}
-</style>
-<table>
-    <tr>
-        <th>TOTALE COSTI</th>
-        <th>ANNI</th>
-        <th>TOTALE AL MESE</th>
-    </tr>
-    <tr>
-        <td>{totale}</td>
-        <td>{anni_ass}</td>
-        <td>{int(tot_mese)}</td>  <!-- Converto in intero per rimuovere decimali -->
-    </tr>
-</table>
-""", unsafe_allow_html=True)
+anni_ass = int(anni_ass)
+st.header("Costi di guida")
 
-tot_tot = rata + tot_mese
+col1,col2,col3,col4,col5 = st.columns(5)
+
+with col1:
+    st.metric("TOTALE COSTI", f"{totale:,d} €")
+
+with col2:
+    st.header("/")
+
+with col3:
+    st.metric("ANNI", f"{anni_ass:,d}")
+
+with col4:
+    st.header("=")
+
+with col5:
+    st.metric("TOTALE AL MESE",f"{tot_mese:,.2f} €")
+
+
+
+st.session_state['tot_tot'] = st.session_state['rata'] + tot_mese
+
 
 st.divider()
 
 st.title("Quanto sarà la mia rata?")
 
-st.markdown(f"""
-| **RATA**   | **COSTI**  | **TOTALE AL MESE** |
-|------------|------------|--------------------|
-| {rata}     | {tot_mese} | {tot_tot}          |
-""")
+col1,col2,col3,col4,col5 = st.columns(5)
 
-st.metric("", f"💵 Spenderai quindi {tot_tot:,.2f} € al mese.")
+with col1:
+    st.metric("RATA", f"{st.session_state["rata"]:,.2f} €")
+
+with col2:
+    st.header("+")
+
+with col3:
+    st.metric("COSTI DI GUIDA",f"{tot_mese:,.2f} €")
+
+with col4:
+    st.header("=")
+
+with col5:
+    st.metric("TOTALE AL MESE",f"{st.session_state["tot_tot"]:,.2f} €")
+
+st.metric("", f"💵 Spenderai quindi {st.session_state["tot_tot"]:,.2f} € al mese.")
 
 
 df = pd.DataFrame({
     "Voce di Spesa": ["Assicurazioni", "Manutenzioni", "Gomme", "Imprevisti"],
     "Totale (€)": [spesa_ass, spesa_manu, spesa_gomme, impre]
 })
+
+
+if st.button("CONFRONTA CON EVERGREEN"):
+        st.switch_page("pages/ever.py")
+
 
 with st.expander("Visualizza grafico"):
     st.subheader("📈 Distribuzione Costi")
@@ -143,6 +156,7 @@ with st.expander("Visualizza grafico"):
     ax.spines['bottom'].set_color('white')  # Bordo inferiore bianco
     ax.spines['left'].set_color('white')  # Bordo sinistro bianco
     st.pyplot(fig)
+
 
 
 data_to_export = {
@@ -175,6 +189,10 @@ def export_to_excel():
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
+
+
+
 # Aggiungi un pulsante che l'utente può premere per scaricare il file Excel
 if st.button("Esporta in Excel"):
     export_to_excel()
+
