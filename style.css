@@ -1,0 +1,30 @@
+.st-emotion-cache-h4xjwg {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    right: 0px;
+    height: 3.75rem;
+    background: rgb(14, 17, 23);
+    outline: none;
+    z-index: 999990;
+    display: flex;
+    
+}
+
+.st-emotion-cache-14553y9 {
+    font-family: "Source Sans Pro", sans-serif;
+    font-size: 14px;
+    color: inherit;
+}
+
+.st-emotion-cache-bm2z3a {
+    display: flex
+;
+    flex-direction: column;
+    width: 100%;
+    overflow: auto;
+    -webkit-box-align: center;
+    align-items: center;
+    background-color: inherit; ;
+}
+
